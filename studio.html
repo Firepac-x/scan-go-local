@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Studio — Scan & Go Local+</title>
+<style>
+  body{font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;margin:0;color:#111}
+  .wrap{display:grid;grid-template-columns:420px 1fr;gap:12px;min-height:100vh}
+  .left{padding:14px;border-right:1px solid #eee}
+  .right{padding:0}
+  label{display:block;font-size:12px;color:#555;margin:6px 0 4px}
+  input,textarea{width:100%;padding:10px;border:1px solid #ccc;border-radius:8px}
+  .row{display:flex;gap:8px}
+  .btn{display:inline-block;padding:10px 14px;border:1px solid #111;border-radius:10px;text-decoration:none;color:#111;margin:6px 4px 0 0}
+  .btn.primary{background:#111;color:#fff}
+  iframe{width:100%;height:100vh;border:0}
+  .muted{color:#666;font-size:12px}
+  .group{border:1px solid #eee;border-radius:12px;padding:10px;margin:8px 0}
+</style>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+</head>
+<body>
+<div class="wrap">
+  <div class="left">
+    <h2>Studio</h2>
+    <div class="group">
+      <label>Nom</label><input id="name" placeholder="Boulangerie de Quartier" value="Boulangerie de Quartier">
+      <label>Slogan</label><input id="headline" placeholder="Pain, café & bons sourires" value="Pain, café & bons sourires">
+      <label>Description</label><textarea id="desc" rows="3" placeholder="Une petite phrase qui donne envie.">Croissants au beurre, café de torréfacteur local, et pain chaud toute la journée.</textarea>
+      <label>Adresse (texte)</label><input id="address" placeholder="12 Rue des Pins, Laval">
+      <label>Photo (URL)</label><input id="photo" placeholder="https://...jpg">
+      <label>Couleur d'accent (ex: #0f6)</label><input id="accent" value="#0f6">
+    </div>
+
+    <div class="group">
+      <label>Téléphone</label><input id="phone" placeholder="+33 6 12 34 56 78">
+      <label>WhatsApp (numéro international)</label><input id="wa" placeholder="+33612345678">
+      <label>Email</label><input id="email" placeholder="contact@exemple.fr">
+      <label>Site</label><input id="site" placeholder="https://exemple.fr">
+      <label>Maps (lien itinéraire)</label><input id="maps" placeholder="https://maps.google.com/?q=...">
+    </div>
+
+    <div class="group">
+      <label>Horaires (ligne simple)</label><input id="hours" placeholder="Lun–Sam 7:00–19:30">
+      <label>IG</label><input id="ig" placeholder="https://instagram.com/...">
+      <label>FB</label><input id="fb" placeholder="https://facebook.com/...">
+      <label>YT</label><input id="yt" placeholder="https://youtube.com/...">
+    </div>
+
+    <div class="group">
+      <label>Lien de don générique (Stripe/PayPal/Lydia)</label><input id="pay" placeholder="https://buy.stripe.com/...">
+      <div class="row">
+        <div><label>Montants rapides</label><input id="amounts" value="2,5,10"></div>
+        <div><label>pay2 (option)</label><input id="pay2" placeholder="Lien direct pour 2€ (option)"></div>
+      </div>
+      <div class="row">
+        <div><label>pay5 (option)</label><input id="pay5" placeholder="Lien direct pour 5€ (option)"></div>
+        <div><label>pay10 (option)</label><input id="pay10" placeholder="Lien direct pour 10€ (option)"></div>
+      </div>
+      <div class="muted">Si pay2/5/10 sont vides, on ajoute automatiquement ?amount=2/5/10 au lien générique.</div>
+    </div>
+
+    <div class="group">
+      <a class="btn primary" href="#" id="build">Générer le lien</a>
+      <a class="btn" href="#" id="open">Ouvrir</a>
+      <a class="btn" href="#" id="copy">Copier l'URL</a>
+    </div>
+
+    <div class="group">
+      <div id="qrcode" style="width:180px;height:180px"></div>
+      <div class="muted">Imprime ce QR et colle-le sur la vitrine, la table ou le comptoir.</div>
+    </div>
+
+    <div class="group">
+      <a class="btn" id="downloadCSV" href="#">Exporter la ligne CSV</a>
+    </div>
+  </div>
+
+  <div class="right">
+    <iframe id="preview"></iframe>
+  </div>
+</div>
+
+<script>
+const profileURL = () => {
+  const base = location.origin + location.pathname.replace('sgl_studio.html','') + 'sgl_profile.html';
+  const p = new URL(base, location.href);
+  ['name','headline','desc','address','photo','accent','phone','wa','email','site','maps','hours','ig','fb','yt','pay','amounts','pay2','pay5','pay10'].forEach(id => {
+    const v = document.getElementById(id).value.trim();
+    if(v) p.searchParams.set(id, v);
+  });
+  return p.toString();
+};
+
+function build(){
+  const url = profileURL();
+  document.getElementById('preview').src = url;
+  const qrd = document.getElementById('qrcode');
+  qrd.innerHTML='';
+  new QRCode(qrd, { text: url, width: 180, height: 180 });
+  document.getElementById('open').href = url;
+  document.getElementById('copy').onclick = (e)=>{ e.preventDefault(); navigator.clipboard.writeText(url) };
+  document.getElementById('downloadCSV').onclick = (e)=>{
+    e.preventDefault();
+    const headers = ['name','headline','desc','address','photo','accent','phone','wa','email','site','maps','hours','ig','fb','yt','pay','amounts','pay2','pay5','pay10'];
+    const row = headers.map(id => '"' + (document.getElementById(id).value||'').replace(/"/g,'""') + '"').join(',');
+    const csv = headers.join(',') + '\n' + row + '\n';
+    const blob = new Blob([csv], {type:'text/csv;charset=utf-8;'});
+    const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'sgl_client.csv'; a.click();
+  };
+}
+
+document.getElementById('build').onclick = (e)=>{ e.preventDefault(); build(); };
+build();
+</script>
+</body>
+</html>
