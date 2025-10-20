@@ -3,32 +3,28 @@
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Page publique — QRLocal</title>
-<link rel="manifest" href="manifest.json">
-<meta name="theme-color" content="#ffffff">
+<link rel="manifest" href="manifest.json"><meta name="theme-color" content="#ffffff">
 <style>
-  :root{--green:#0f6;--fg:#111;--muted:#666}
-  body{font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;margin:0;color:var(--fg);background:#fff}
-  .topbar{position:sticky;top:0;background:#fff;border-bottom:1px solid #eee;padding:10px 16px;z-index:100;display:flex;justify-content:space-between;align-items:center}
-  a.back{text-decoration:none;color:var(--green);font-weight:700}
-  .who{font-size:12px;color:#0a4;background:#eafff0;border:1px solid #c4f1d4;padding:4px 8px;border-radius:999px}
-  .wrap{max-width:820px;margin:0 auto;padding:16px}
-  .hero{display:flex;gap:16px;align-items:center}
-  .pic{width:88px;height:88px;border-radius:16px;object-fit:cover;border:1px solid #eee}
-  h1{margin:0 0 6px;font-size:28px}
-  .tag{color:var(--muted);margin:0 0 6px}
-  .btns{display:flex;flex-wrap:wrap;gap:10px;margin:12px 0}
-  a.btn{display:inline-block;padding:10px 14px;border-radius:12px;text-decoration:none;border:1px solid #111;color:#111;font-weight:700}
-  a.btn.primary{background:var(--fg);color:#fff;border-color:var(--fg)}
-  .card{background:#fff;border:1px solid #eee;border-radius:14px;padding:14px;margin:12px 0;box-shadow:0 6px 20px rgba(0,0,0,.03)}
-  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px}
-  .notice{position:fixed;left:50%;transform:translateX(-50%);bottom:20px;background:#111;color:#fff;padding:10px 14px;border-radius:12px;opacity:0;transition:opacity .4s}
-  .notice.show{opacity:1}
-  textarea{width:100%;padding:10px;border:1px solid #ccc;border-radius:10px}
+:root{--green:#0f6;--fg:#111;--muted:#666}
+body{font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;margin:0;color:var(--fg);background:#fff}
+.wrap{max-width:820px;margin:0 auto;padding:16px}
+.hero{display:flex;gap:16px;align-items:center}
+.pic{width:88px;height:88px;border-radius:16px;object-fit:cover;border:1px solid #eee}
+h1{margin:0 0 6px;font-size:28px}.tag{color:var(--muted);margin:0 0 6px}
+.btns{display:flex;flex-wrap:wrap;gap:10px;margin:12px 0}
+a.btn{display:inline-block;padding:10px 14px;border-radius:12px;text-decoration:none;border:1px solid #111;color:#111;font-weight:700}
+a.btn.primary{background:var(--fg);color:#fff;border-color:var(--fg)}
+.card{background:#fff;border:1px solid #eee;border-radius:14px;padding:14px;margin:12px 0;box-shadow:0 6px 20px rgba(0,0,0,.03)}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px}
+.notice{position:fixed;left:50%;transform:translateX(-50%);bottom:20px;background:#111;color:#fff;padding:10px 14px;border-radius:12px;opacity:0;transition:opacity .4s}
+.notice.show{opacity:1}
+textarea{width:100%;padding:10px;border:1px solid #ccc;border-radius:10px}
+.info{font-size:12px;color:#666}
 </style>
 </head>
 <body>
-<div class="topbar"><a class="back" href="index.html">← Accueil</a><span class="who">Espace public</span></div>
 <div class="wrap">
+  <div class="info">Espace public — lecture seule, sans accès à l’espace commerçant.</div>
   <div class="hero">
     <img id="pic" class="pic" alt="photo">
     <div>
@@ -39,7 +35,6 @@
   </div>
 
   <div id="thanks" class="card" style="display:none"></div>
-
   <div id="desc" class="card" style="display:none"></div>
   <div class="btns" id="contacts"></div>
 
@@ -71,101 +66,80 @@
 <div id="notice" class="notice">🥳 Merci pour votre don ! Votre soutien fait vivre le local 💚</div>
 
 <script>
+const CONFIG = {
+  MODE: 'open', // 'open' or 'locked'
+  LOCKED: {
+    name: 'Boulangerie de Quartier',
+    headline: 'Pain, café & bons sourires',
+    desc: 'Croissants au beurre, café local, pain chaud.',
+    address: '12 Rue des Pins, Laval',
+    photo: '',
+    pay: 'https://buy.stripe.com/test_6oE03kA9d3Yf4bGcMN',
+    amounts: '2,5,10',
+    thanks: 'Merci pour votre soutien !',
+    contact: 'contact@exemple.fr',
+    phone:'', wa:'', email:'', maps:'', site:'', ig:'', fb:'', yt:''
+  },
+  WHITELIST_PAY_HOSTS: ['buy.stripe.com','www.paypal.com','paypal.com','lydia-app.com']
+};
 function qs(n){ return new URLSearchParams(location.search).get(n) || '' }
 function money(x){ try{ return new Intl.NumberFormat(undefined,{style:'currency',currency:'EUR'}).format(parseFloat(x)) } catch(e){ return x+'€' } }
+function fromParams(){ return {
+  name: qs('name')||'', headline: qs('headline')||'', desc: qs('desc')||'', address: qs('address')||'', photo: qs('photo')||'',
+  pay: qs('pay')||'', amounts: (qs('amounts')||'2,5,10'),
+  thanks: qs('thanks')||'', contact: qs('contact')||'', phone: qs('phone')||'', wa: qs('wa')||'', email: qs('email')||'', maps: qs('maps')||'', site: qs('site')||'',
+  ig: qs('ig')||'', fb: qs('fb')||'', yt: qs('yt')||''
+}; }
+const data = (CONFIG.MODE==='locked') ? CONFIG.LOCKED : fromParams();
 
-const name = qs('name') || 'Boulangerie de Quartier';
-const headline = qs('headline') || 'Pain, café & bons sourires';
-const photo = qs('photo') || '';
-const addr = qs('address') || '';
-const desc = qs('desc') || '';
-const pay = qs('pay') || 'https://buy.stripe.com/test_6oE03kA9d3Yf4bGcMN';
-const pay2 = qs('pay2'); const pay5 = qs('pay5'); const pay10 = qs('pay10');
-const amounts = (qs('amounts') || '2,5,10').split(',').map(x=>x.trim()).filter(Boolean);
-const thanks = qs('thanks') || '';
-const contact = qs('contact') || '';
-
-document.getElementById('name').textContent = name;
-document.getElementById('headline').textContent = headline;
-document.getElementById('addr').textContent = addr;
-const pic = document.getElementById('pic'); if(photo){ pic.src = photo } else { pic.style.display='none' }
-
-if(desc){ const el = document.getElementById('desc'); el.style.display='block'; el.textContent = desc; }
-if(thanks){ const el = document.getElementById('thanks'); el.style.display='block'; el.textContent = thanks; }
+document.getElementById('name').textContent = data.name || 'Bénéficiaire';
+document.getElementById('headline').textContent = data.headline || '';
+document.getElementById('addr').textContent = data.address || '';
+const pic = document.getElementById('pic'); if(data.photo){ pic.src = data.photo } else { pic.style.display='none' }
+if(data.desc){ const el = document.getElementById('desc'); el.style.display='block'; el.textContent = data.desc; }
+if(data.thanks){ const el = document.getElementById('thanks'); el.style.display='block'; el.textContent = data.thanks; }
 
 const contacts = document.getElementById('contacts');
-function addBtn(txt, href, primary=false){
-  if(!href) return;
-  const a = document.createElement('a'); a.className='btn' + (primary?' primary':'');
-  a.textContent = txt; a.href = href; a.target='_blank'; a.rel='noopener';
-  contacts.appendChild(a);
-}
-const phone = qs('phone'); const wa = qs('wa'); const email = qs('email'); const maps = qs('maps'); const site = qs('site');
-if(phone) addBtn('Appeler','tel:'+phone,true);
-if(wa) addBtn('WhatsApp','https://wa.me/'+wa.replace(/^\+/,''));
-if(email) addBtn('Email','mailto:'+email);
-if(maps) addBtn('Itinéraire', maps);
-if(site) addBtn('Site', site);
+function addBtn(txt, href, primary=false){ if(!href) return; const a=document.createElement('a'); a.className='btn'+(primary?' primary':''); a.textContent=txt; a.href=href; a.target='_blank'; a.rel='noopener'; contacts.appendChild(a); }
+if(data.phone) addBtn('Appeler','tel:'+data.phone,true);
+if(data.wa) addBtn('WhatsApp','https://wa.me/'+data.wa.replace(/^\+/,''));
+if(data.email) addBtn('Email','mailto:'+data.email);
+if(data.maps) addBtn('Itinéraire', data.maps);
+if(data.site) addBtn('Site', data.site);
 
+// Social
 const links = [];
-['ig','fb','yt','tt','tw','ln','tg'].forEach(k=>{ const v = qs(k); if(v) links.push([k.toUpperCase(), v]); });
-if(links.length){
-  document.getElementById('links').style.display='block';
-  const box = document.getElementById('linksList');
-  links.forEach(([label, href])=>{
-    const a = document.createElement('a'); a.className='btn'; a.textContent=label; a.href=href; a.target='_blank'; a.rel='noopener'; box.appendChild(a);
-  });
-}
+[['IG','ig'],['FB','fb'],['YT','yt']].forEach(([label,key])=>{ const v=data[key]; if(v) links.push([label, v]); });
+if(links.length){ document.getElementById('links').style.display='block'; const box=document.getElementById('linksList'); links.forEach(([label,href])=>{ const a=document.createElement('a'); a.className='btn'; a.textContent=label; a.href=href; a.target='_blank'; a.rel='noopener'; box.appendChild(a); }); }
 
-const dons = document.getElementById('donations');
+// Donations (with pay host whitelist)
+const dons=document.getElementById('donations');
+function isAllowedPay(url){ try{ const h=new URL(url, location.href).host.toLowerCase(); return CONFIG.WHITELIST_PAY_HOSTS.includes(h); }catch(e){ return false; } }
+const pay=data.pay; const amounts=(data.amounts||'2,5,10').split(',').map(x=>x.trim()).filter(Boolean);
 function quick(amount){
-  const a = document.createElement('a'); a.className='btn'; a.textContent = money(amount);
-  let url = pay;
-  const alt = (amount=='2'&&pay2)||(amount=='5'&&pay5)||(amount=='10'&&pay10);
-  if(alt){ url = alt }
-  else if(pay){
-    const u = new URL(pay, location.href);
-    if(!u.searchParams.has('amount')) u.searchParams.append('amount', amount);
-    if(!u.searchParams.has('return_url')) u.searchParams.append('return_url', location.origin + location.pathname + '?paid=true&name='+encodeURIComponent(name));
-    url = u.toString();
-  }
-  a.href = url || '#'; a.target='_blank'; a.rel='noopener';
-  dons.appendChild(a);
+  const a=document.createElement('a'); a.className='btn'; a.textContent=money(amount);
+  let url='#';
+  if(pay && isAllowedPay(pay)){ const u=new URL(pay, location.href); if(!u.searchParams.has('amount')) u.searchParams.append('amount', amount); if(!u.searchParams.has('return_url')) u.searchParams.append('return_url', location.origin + location.pathname + '?paid=true&name='+encodeURIComponent(data.name||'')); url=u.toString(); }
+  a.href=url; a.target='_blank'; a.rel='noopener'; dons.appendChild(a);
 }
 amounts.forEach(a=>quick(a));
-
-const freeAmt = document.getElementById('freeAmount'); const payFree = document.getElementById('payFree');
-function updateFree(){
-  let url = pay || '#'; const v = freeAmt.value;
-  if(v && !isNaN(parseFloat(v)) && pay){
-    const u = new URL(pay, location.href);
-    if(!u.searchParams.has('amount')) u.searchParams.append('amount', v);
-    if(!u.searchParams.has('return_url')) u.searchParams.append('return_url', location.origin + location.pathname + '?paid=true&name='+encodeURIComponent(name));
-    url = u.toString();
-  }
-  payFree.href = url;
-}
+const freeAmt=document.getElementById('freeAmount'); const payFree=document.getElementById('payFree');
+function updateFree(){ let url='#'; const v=freeAmt.value; if(v && !isNaN(parseFloat(v)) && pay && isAllowedPay(pay)){ const u=new URL(pay, location.href); if(!u.searchParams.has('amount')) u.searchParams.append('amount', v); if(!u.searchParams.has('return_url')) u.searchParams.append('return_url', location.origin + location.pathname + '?paid=true&name='+encodeURIComponent(data.name||'')); url=u.toString(); } payFree.href=url; }
 freeAmt.addEventListener('input', updateFree); updateFree();
 
-if(qs('paid') === 'true'){
-  const n = document.getElementById('notice'); n.classList.add('show');
-  setTimeout(()=>n.classList.remove('show'), 3500);
-}
+// Thanks toast
+function getQ(n){ return new URLSearchParams(location.search).get(n) || '' }
+if(getQ('paid') === 'true'){ const n=document.getElementById('notice'); n.classList.add('show'); setTimeout(()=>n.classList.remove('show'), 3500); }
 
-const msgBtn = document.getElementById('sendMsg');
-msgBtn.addEventListener('click', (e)=>{
+// Message email
+document.getElementById('sendMsg').addEventListener('click',(e)=>{
   e.preventDefault();
-  const msg = document.getElementById('messageBox').value || '';
-  let href = '#';
-  if(contact){
-    const subject = 'Message via QRLocal — ' + name;
-    const body = msg ? msg : 'Bonjour !';
-    href = 'mailto:'+contact+'?subject='+encodeURIComponent(subject)+'&body='+encodeURIComponent(body);
-  } else {
-    alert('Aucune adresse de contact définie.');
-    return;
-  }
-  window.location.href = href;
+  const msg = (document.getElementById('messageBox').value || '');
+  const to = (data.contact || '');
+  if(!to){ alert('Aucune adresse de contact définie.'); return; }
+  const subject = 'Message via QRLocal — ' + (data.name||'');
+  const body = msg || 'Bonjour !';
+  window.location.href = 'mailto:'+to+'?subject='+encodeURIComponent(subject)+'&body='+encodeURIComponent(body);
 });
 </script>
 </body>

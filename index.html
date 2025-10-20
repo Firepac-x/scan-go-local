@@ -2,28 +2,26 @@
 <html lang="fr">
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
-<title>QRLocal — Aider • Créer</title>
-<link rel="manifest" href="manifest.json">
-<meta name="theme-color" content="#ffffff">
+<title>QRLocal — Accueil</title>
+<link rel="manifest" href="manifest.json"><meta name="theme-color" content="#ffffff">
 <style>
-  :root{--green:#0f6;--fg:#111;--muted:#666;--bg:#fafafa}
-  *{box-sizing:border-box}
-  body{font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;margin:0;color:var(--fg);background:var(--bg)}
-  nav{position:sticky;top:0;backdrop-filter:saturate(1.8) blur(8px);background:rgba(255,255,255,.9);border-bottom:1px solid #eee;display:flex;justify-content:space-between;align-items:center;padding:10px 16px;z-index:100}
-  nav .logo{display:flex;align-items:center;gap:10px;font-weight:800;text-decoration:none;color:var(--fg)}
-  nav .logo .dot{width:18px;height:18px;border-radius:4px;background:var(--green)}
-  nav .menu a{margin-left:14px;text-decoration:none;color:var(--fg);font-weight:600}
-  nav .menu a:hover{color:var(--green)}
-  header{padding:36px 16px;text-align:center}
-  h1{font-size:32px;margin:0 0 6px}
-  p.lead{color:#333;margin:0}
-  section{padding:20px 16px;max-width:1000px;margin:0 auto}
-  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:14px}
-  .card{background:#fff;border:1px solid #eee;border-radius:14px;padding:16px;box-shadow:0 6px 20px rgba(0,0,0,.04)}
-  .badge{display:inline-block;background:#eafff0;color:#0a4; border:1px solid #c4f1d4; padding:4px 8px;border-radius:999px;font-size:12px;font-weight:700;margin-bottom:8px}
-  a.btn{display:inline-block;margin-top:10px;padding:12px 16px;border-radius:12px;text-decoration:none;border:1px solid #111;color:#111;font-weight:700}
-  a.btn.primary{background:#111;color:#fff}
-  footer{padding:24px 16px;text-align:center;color:#777}
+:root{--green:#0f6;--fg:#111;--muted:#666;--bg:#fafafa}
+*{box-sizing:border-box}body{font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;margin:0;color:var(--fg);background:var(--bg)}
+nav{position:sticky;top:0;background:#fff;border-bottom:1px solid #eee;display:flex;justify-content:space-between;align-items:center;padding:10px 16px}
+nav .logo{display:flex;align-items:center;gap:10px;font-weight:800;text-decoration:none;color:var(--fg)}
+nav .logo .dot{width:18px;height:18px;border-radius:4px;background:var(--green)}
+nav .menu a{margin-left:14px;text-decoration:none;color:var(--fg);font-weight:600}
+nav .menu a:hover{color:var(--green)}
+header{padding:36px 16px;text-align:center}
+h1{font-size:32px;margin:0 0 6px}
+p.lead{color:#333;margin:0}
+section{padding:20px 16px;max-width:1000px;margin:0 auto}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:14px}
+.card{background:#fff;border:1px solid #eee;border-radius:14px;padding:16px;box-shadow:0 6px 20px rgba(0,0,0,.04)}
+.badge{display:inline-block;background:#eafff0;color:#0a4;border:1px solid #c4f1d4;padding:4px 8px;border-radius:999px;font-size:12px;font-weight:700;margin-bottom:8px}
+a.btn{display:inline-block;margin-top:10px;padding:12px 16px;border-radius:12px;text-decoration:none;border:1px solid #111;color:#111;font-weight:700}
+a.btn.primary{background:#111;color:#fff}
+footer{padding:24px 16px;text-align:center;color:#777}
 </style>
 </head>
 <body>
@@ -32,42 +30,33 @@
   <div class="menu">
     <a href="studio.html">Espace commerçant</a>
     <a href="cards.html">Cartes</a>
-    <a href="profile.html?name=Boulangerie%20de%20Quartier&headline=Pain%2C%20caf%C3%A9%20%26%20bons%20sourires&desc=Croissants%20au%20beurre%2C%20caf%C3%A9%20local%2C%20pain%20chaud.&address=12%20Rue%20des%20Pins%2C%20Laval&pay=https%3A%2F%2Fbuy.stripe.com%2Ftest_6oE03kA9d3Yf4bGcMN&amounts=2%2C5%2C10&thanks=Merci%20pour%20votre%20soutien%20!&contact=contact%40exemple.fr">Exemple public</a>
   </div>
 </nav>
-
 <header>
   <h1>Choisissez votre espace</h1>
-  <p class="lead">Deux portes d’entrée claires : <b>“Je veux aider”</b> (grand public) et <b>“Je suis commerçant”</b> (création/édition).</p>
+  <p class="lead">Deux portes d’entrée claires : <b>Public (clients/donateurs)</b> et <b>Commerçant</b>.</p>
 </header>
-
 <section class="grid">
   <div class="card">
     <div class="badge">POUR LE PUBLIC</div>
-    <h2>Aider un commerce / une asso</h2>
-    <p>Accédez à la page publique (infos, liens, <b>don Apple Pay / Google Pay</b>), laissez un message au bénéficiaire.</p>
-    <a class="btn" href="profile.html?name=Boulangerie%20de%20Quartier&headline=Pain%2C%20caf%C3%A9%20%26%20bons%20sourires&desc=Croissants%20au%20beurre%2C%20caf%C3%A9%20local%2C%20pain%20chaud.&address=12%20Rue%20des%20Pins%2C%20Laval&pay=https%3A%2F%2Fbuy.stripe.com%2Ftest_6oE03kA9d3Yf4bGcMN&amounts=2%2C%2C10&thanks=Merci%20pour%20votre%20soutien%20!&contact=contact%40exemple.fr">Ouvrir un exemple</a>
+    <h2>Page publique d’un commerce</h2>
+    <p>Exemple (lecture seule) — infos + don Apple Pay / Google Pay + message au bénéficiaire.</p>
+    <a class="btn" href="profile.html?name=Boulangerie%20de%20Quartier&headline=Pain%2C%20caf%C3%A9%20%26%20bons%20sourires&desc=Croissants%20au%20beurre%2C%20caf%C3%A9%20local%2C%20pain%20chaud.&address=12%20Rue%20des%20Pins%2C%20Laval&pay=https%3A%2F%2Fbuy.stripe.com%2Ftest_6oE03kA9d3Yf4bGcMN&amounts=2%2C5%2C10&thanks=Merci%20pour%20votre%20soutien%20!&contact=contact%40exemple.fr">Voir un exemple public</a>
   </div>
   <div class="card">
     <div class="badge">POUR LES COMMERÇANTS</div>
-    <h2>Créer ma page QRLocal</h2>
-    <p>Générez une page publique + QR + liens de don. Ajoutez vos réseaux, horaires et un message de remerciement.</p>
+    <h2>Créer / éditer ma page</h2>
+    <p>Générez votre page publique, QR à imprimer, et lien de don (Stripe recommandé).</p>
     <a class="btn primary" href="studio.html">Aller à l’espace commerçant</a>
   </div>
   <div class="card">
     <div class="badge">OUTIL</div>
     <h2>Imprimer des cartes QR</h2>
-    <p>Cartes A6 avec votre QR pour comptoir, vitrine ou tables.</p>
+    <p>Cartes A6 prêtes à imprimer pour comptoir, vitrine, tables.</p>
     <a class="btn" href="cards.html">Générer mes cartes</a>
   </div>
 </section>
-
-<footer>© QRLocal — Espace public & espace commerçant clairement séparés.</footer>
-
-<script>
-if('serviceWorker' in navigator){
-  navigator.serviceWorker.register('./service-worker.js').catch(()=>{});
-}
-</script>
+<footer>© QRLocal — L’espace public ne permet aucune modification. L’espace commerçant est protégé par un code.</footer>
+<script>if('serviceWorker' in navigator){navigator.serviceWorker.register('./service-worker.js').catch(()=>{});}</script>
 </body>
 </html>
