@@ -2,33 +2,34 @@
 <html lang="fr">
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Studio — QRLocal</title>
+<title>Espace commerçant — QRLocal</title>
 <link rel="manifest" href="manifest.json">
 <meta name="theme-color" content="#ffffff">
 <style>
   :root{--green:#0f6;--fg:#111;--muted:#666}
-  body{font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;margin:0;color:var(--fg)}
+  body{font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;margin:0;color:var(--fg);background:#fafafa}
   .topbar{position:sticky;top:0;background:#fff;border-bottom:1px solid #eee;padding:10px 16px;z-index:100}
+  .topbar .who{font-size:12px;color:#0a4;background:#eafff0;border:1px solid #c4f1d4;padding:4px 8px;border-radius:999px;margin-left:8px}
   a.back{text-decoration:none;color:var(--green);font-weight:700}
   .wrap{display:grid;grid-template-columns:420px 1fr;gap:12px;min-height:100vh}
-  .left{padding:14px;border-right:1px solid #eee}
-  .right{padding:0}
+  .left{padding:14px}
+  .right{padding:0;border-left:1px solid #eee;background:#fff}
   label{display:block;font-size:12px;color:#555;margin:6px 0 4px}
   input,textarea{width:100%;padding:10px;border:1px solid #ccc;border-radius:10px}
   .row{display:flex;gap:8px}
-  .btn{display:inline-block;padding:10px 14px;border-radius:12px;text-decoration:none;border:1px solid #111;color:#111;margin:6px 4px 0 0;font-weight:700}
+  .btn{display:inline-block;padding:10px 14px;border-radius:12px;text-decoration:none;border:1px solid #111;color:#111;margin:6px 4px 0 0;font-weight:700;background:#fff}
   .btn.primary{background:var(--fg);color:#fff;border-color:var(--fg)}
-  iframe{width:100%;height:100vh;border:0;background:#f8f8f8}
+  iframe{width:100%;height:100vh;border:0}
   .muted{color:#666;font-size:12px}
-  .group{border:1px solid #eee;border-radius:14px;padding:10px;margin:8px 0;background:#fff;box-shadow:0 6px 20px rgba(0,0,0,.03)}
+  .group{background:#fff;border:1px solid #eee;border-radius:14px;padding:10px;margin:8px 0;box-shadow:0 6px 20px rgba(0,0,0,.03)}
 </style>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 </head>
 <body>
-<div class="topbar"><a class="back" href="index.html">← Accueil</a></div>
+<div class="topbar"><a class="back" href="index.html">← Accueil</a><span class="who">Espace commerçant</span></div>
 <div class="wrap">
   <div class="left">
-    <h2>Studio</h2>
+    <h2>Créer / éditer ma page</h2>
     <div class="group">
       <label>Nom</label><input id="name" value="Boulangerie de Quartier">
       <label>Slogan</label><input id="headline" value="Pain, café & bons sourires">
@@ -51,7 +52,7 @@
       <label>YT</label><input id="yt" placeholder="https://youtube.com/...">
     </div>
     <div class="group">
-      <label>Lien de don (Stripe/PayPal/Lydia)</label><input id="pay" placeholder="https://buy.stripe.com/test_6oE03kA9d3Yf4bGcMN">
+      <label><b>Lien de don (Stripe recommandé)</b></label><input id="pay" placeholder="https://buy.stripe.com/test_6oE03kA9d3Yf4bGcMN">
       <div class="row">
         <div><label>Montants rapides</label><input id="amounts" value="2,5,10"></div>
         <div><label>pay2 (option)</label><input id="pay2" placeholder="Lien direct 2€ (option)"></div>
@@ -60,27 +61,32 @@
         <div><label>pay5 (option)</label><input id="pay5" placeholder="Lien direct 5€ (option)"></div>
         <div><label>pay10 (option)</label><input id="pay10" placeholder="Lien direct 10€ (option)"></div>
       </div>
-      <div class="muted">Pour Apple Pay / Google Pay, utilisez un Payment Link Stripe. S'il n'y a pas de lien fixe, on ajoutera ?amount=2/5/10.</div>
+      <div class="muted">Apple Pay / Google Pay s’affichent automatiquement si votre lien Stripe est configuré.</div>
     </div>
+    <div class="group">
+      <label>Message public (merci / mission)</label><textarea id="thanks" rows="2" placeholder="Merci pour votre soutien — chaque don nous aide à...">Merci pour votre soutien — chaque don nous aide à améliorer notre atelier.</textarea>
+      <label>Email pour recevoir des messages</label><input id="contact" placeholder="contact@exemple.fr">
+      <div class="muted">Les “messages au bénéficiaire” ouvriront un e‑mail pré-rempli vers cette adresse.</div>
+    </div>
+
     <div class="group">
       <a class="btn primary" href="#" id="build">Générer le lien</a>
       <a class="btn" href="#" id="open">Ouvrir</a>
       <a class="btn" href="#" id="copy">Copier l'URL</a>
     </div>
+
     <div class="group">
       <div id="qrcode" style="width:180px;height:180px"></div>
       <div class="muted">Imprimez ce QR et collez-le sur la vitrine.</div>
     </div>
-    <div class="group">
-      <a class="btn" id="downloadCSV" href="#">Exporter CSV</a>
-    </div>
+
   </div>
   <div class="right"><iframe id="preview"></iframe></div>
 </div>
 <script>
 const buildURL = () => {
   const base = new URL('profile.html', location.href);
-  ['name','headline','desc','address','photo','accent','phone','wa','email','site','maps','hours','ig','fb','yt','pay','amounts','pay2','pay5','pay10'].forEach(id => {
+  ['name','headline','desc','address','photo','accent','phone','wa','email','site','maps','hours','ig','fb','yt','pay','amounts','pay2','pay5','pay10','thanks','contact'].forEach(id => {
     const v = document.getElementById(id).value.trim();
     if(v) base.searchParams.set(id, v);
   });
@@ -93,14 +99,6 @@ function build(){
   new QRCode(qrd, { text: url, width: 180, height: 180 });
   document.getElementById('open').href = url;
   document.getElementById('copy').onclick = (e)=>{ e.preventDefault(); navigator.clipboard.writeText(url) };
-  document.getElementById('downloadCSV').onclick = (e)=>{
-    e.preventDefault();
-    const headers = ['name','headline','desc','address','photo','accent','phone','wa','email','site','maps','hours','ig','fb','yt','pay','amounts','pay2','pay5','pay10'];
-    const row = headers.map(id => '"' + (document.getElementById(id).value||'').replace(/"/g,'""') + '"').join(',');
-    const csv = headers.join(',') + '\n' + row + '\n';
-    const blob = new Blob([csv], {type:'text/csv;charset=utf-8;'});
-    const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'qrlocal_client.csv'; a.click();
-  };
 }
 document.getElementById('build').onclick = (e)=>{ e.preventDefault(); build(); };
 build();
