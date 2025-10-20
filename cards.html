@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Cartes QR — Scan & Go Local+</title>
+<style>
+ body{font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;margin:0;padding:12px}
+ .toolbar{position:sticky;top:0;background:#fff;border-bottom:1px solid #eee;padding:8px;margin:-12px -12px 8px;display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+ input,button{padding:10px;border:1px solid #ccc;border-radius:8px}
+ .grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
+ .card{border:1px solid #eee;border-radius:16px;padding:14px;text-align:center;page-break-inside:avoid}
+ .title{font-weight:800;margin-bottom:6px}
+ .qr{width:200px;height:200px;margin:10px auto}
+ .msg{font-size:14px;color:#333}
+ @media print{ .toolbar{display:none} .grid{gap:6px} .card{border:1px dashed #aaa} }
+</style>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+</head>
+<body>
+<div class="toolbar">
+  <b>Générer</b>
+  <input id="title" placeholder="Nom (ex: Boulangerie Martin)" style="min-width:240px">
+  <input id="message" placeholder="Message (ex: Scannez pour nous soutenir)">
+  <input id="url" placeholder="URL de la page (profile.html?...)" style="min-width:320px">
+  <input id="count" type="number" value="6" min="1" max="60">
+  <button onclick="generate()">Générer</button>
+  <button onclick="window.print()">Imprimer</button>
+</div>
+<div id="cards" class="grid"></div>
+<script>
+function generate(){
+  const title = document.getElementById('title').value || 'Scan & Go Local+';
+  const msg = document.getElementById('message').value || 'Scannez pour voir nos infos et soutenir 💛';
+  const url = document.getElementById('url').value || location.href;
+  const count = Math.max(1, Math.min(60, parseInt(document.getElementById('count').value || '6', 10)));
+  const box = document.getElementById('cards'); box.innerHTML='';
+  for(let i=0;i<count;i++){
+    const card = document.createElement('div'); card.className='card';
+    const t = document.createElement('div'); t.className='title'; t.textContent=title;
+    const q = document.createElement('div'); q.className='qr';
+    const m = document.createElement('div'); m.className='msg'; m.textContent = msg;
+    card.appendChild(t); card.appendChild(q); card.appendChild(m); box.appendChild(card);
+    new QRCode(q, { text: url, width: 200, height: 200 });
+  }
+}
+</script>
+</body>
+</html>
