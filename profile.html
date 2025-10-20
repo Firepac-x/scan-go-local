@@ -2,24 +2,30 @@
 <html lang="fr">
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Profil — Scan & Go Local+</title>
+<title>Profil — QRLocal</title>
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#ffffff">
 <style>
- :root{--bg:#fff;--fg:#111;--muted:#666}
- body{font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;margin:0;background:var(--bg);color:var(--fg)}
- .wrap{max-width:800px;margin:0 auto;padding:20px}
- .hero{display:flex;gap:16px;align-items:center}
- .pic{width:88px;height:88px;border-radius:16px;object-fit:cover;border:1px solid #eee}
- h1{margin:0 0 6px;font-size:28px}
- .tag{color:var(--muted);margin:0 0 6px}
- .btns{display:flex;flex-wrap:wrap;gap:10px;margin:12px 0}
- a.btn{display:inline-block;padding:10px 14px;border:1px solid #111;border-radius:10px;text-decoration:none;color:#111}
- a.btn.primary{background:#111;color:#fff}
- .card{border:1px solid #eee;border-radius:12px;padding:14px;margin:12px 0}
- .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px}
- footer{padding:20px;color:#666;text-align:center;font-size:12px}
+  :root{--green:#0f6;--fg:#111;--muted:#666}
+  body{font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;margin:0;color:var(--fg)}
+  .topbar{position:sticky;top:0;background:#fff;border-bottom:1px solid #eee;padding:10px 16px;z-index:100}
+  a.back{text-decoration:none;color:var(--green);font-weight:700}
+  .wrap{max-width:820px;margin:0 auto;padding:16px}
+  .hero{display:flex;gap:16px;align-items:center}
+  .pic{width:88px;height:88px;border-radius:16px;object-fit:cover;border:1px solid #eee}
+  h1{margin:0 0 6px;font-size:28px}
+  .tag{color:var(--muted);margin:0 0 6px}
+  .btns{display:flex;flex-wrap:wrap;gap:10px;margin:12px 0}
+  a.btn{display:inline-block;padding:10px 14px;border-radius:12px;text-decoration:none;border:1px solid #111;color:#111;font-weight:700}
+  a.btn.primary{background:var(--fg);color:#fff;border-color:var(--fg)}
+  .card{background:#fff;border:1px solid #eee;border-radius:14px;padding:14px;margin:12px 0;box-shadow:0 6px 20px rgba(0,0,0,.03)}
+  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px}
+  .notice{position:fixed;left:50%;transform:translateX(-50%);bottom:20px;background:#111;color:#fff;padding:10px 14px;border-radius:12px;opacity:0;transition:opacity .4s}
+  .notice.show{opacity:1}
 </style>
 </head>
 <body>
+<div class="topbar"><a class="back" href="index.html">← Accueil</a></div>
 <div class="wrap">
   <div class="hero">
     <img id="pic" class="pic" alt="photo">
@@ -37,19 +43,19 @@
     <h3>Soutenir / don</h3>
     <div class="btns" id="donations"></div>
     <div class="btns">
-      <input id="freeAmount" type="number" step="0.1" min="0" placeholder="Autre montant" style="padding:10px;border:1px solid #ccc;border-radius:8px">
+      <input id="freeAmount" type="number" step="0.1" min="0" placeholder="Autre montant" style="padding:10px;border:1px solid #ccc;border-radius:10px">
       <a id="payFree" class="btn primary" target="_blank" rel="noopener">Payer</a>
     </div>
-    <div style="color:#666;margin-top:6px">Paiement via Stripe/PayPal/Lydia. Aucun stockage de données bancaires ici.</div>
+    <div style="color:#666;margin-top:6px">Paiement via Stripe/PayPal/Lydia. Aucune donnée bancaire n'est stockée ici.</div>
   </div>
 
   <div id="links" class="card" style="display:none">
     <h3>Liens</h3>
     <div id="linksList" class="grid"></div>
   </div>
-
-  <footer>© Scan & Go Local+</footer>
 </div>
+
+<div id="notice" class="notice">🥳 Merci pour votre don ! Votre soutien fait vivre le local 💚</div>
 
 <script>
 function qs(n){ return new URLSearchParams(location.search).get(n) || '' }
@@ -60,7 +66,7 @@ const headline = qs('headline') || 'Pain, café & bons sourires';
 const photo = qs('photo') || '';
 const addr = qs('address') || '';
 const desc = qs('desc') || '';
-const pay = qs('pay') || '';
+const pay = qs('pay') || 'https://buy.stripe.com/test_6oE03kA9d3Yf4bGcMN';
 const pay2 = qs('pay2'); const pay5 = qs('pay5'); const pay10 = qs('pay10');
 const amounts = (qs('amounts') || '2,5,10').split(',').map(x=>x.trim()).filter(Boolean);
 
@@ -104,6 +110,7 @@ function quick(amount){
   else if(pay){
     const u = new URL(pay, location.href);
     if(!u.searchParams.has('amount')) u.searchParams.append('amount', amount);
+    if(!u.searchParams.has('return_url')) u.searchParams.append('return_url', location.origin + location.pathname + '?paid=true');
     url = u.toString();
   }
   a.href = url || '#'; a.target='_blank'; a.rel='noopener';
@@ -117,11 +124,17 @@ function updateFree(){
   if(v && !isNaN(parseFloat(v)) && pay){
     const u = new URL(pay, location.href);
     if(!u.searchParams.has('amount')) u.searchParams.append('amount', v);
+    if(!u.searchParams.has('return_url')) u.searchParams.append('return_url', location.origin + location.pathname + '?paid=true');
     url = u.toString();
   }
   payFree.href = url;
 }
 freeAmt.addEventListener('input', updateFree); updateFree();
+
+if(qs('paid') === 'true'){
+  const n = document.getElementById('notice'); n.classList.add('show');
+  setTimeout(()=>n.classList.remove('show'), 3500);
+}
 </script>
 </body>
 </html>

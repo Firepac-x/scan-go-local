@@ -2,39 +2,83 @@
 <html lang="fr">
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Scan & Go Local+</title>
+<title>QRLocal — Un QR, mille soutiens</title>
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#ffffff">
 <style>
- body{font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;margin:0;color:#111}
- header{padding:64px 20px;text-align:center;background:linear-gradient(180deg,#f7f7f7,#fff)}
- h1{font-size:40px;margin:0 0 12px}
- p.lead{font-size:18px;max-width:820px;margin:0 auto 20px;color:#333}
- .cta{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
- a.btn{padding:12px 18px;border-radius:10px;text-decoration:none;border:1px solid #111;color:#111}
- a.btn.primary{background:#111;color:#fff}
- section{padding:36px 20px;max-width:1000px;margin:0 auto}
- .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px}
- .card{border:1px solid #eee;border-radius:12px;padding:16px}
- footer{padding:32px 20px;text-align:center;color:#666}
+  :root{--green:#0f6;--fg:#111;--muted:#666;--bg:#fafafa}
+  *{box-sizing:border-box}
+  body{font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;margin:0;color:var(--fg);background:var(--bg)}
+  #splash{position:fixed;inset:0;background:#fff;display:flex;align-items:center;justify-content:center;z-index:9999;transition:opacity .6s ease}
+  #splash.hide{opacity:0;pointer-events:none}
+  .logoWrap{display:flex;flex-direction:column;align-items:center;gap:10px}
+  .qricon{width:84px;height:84px}
+  .word{font-weight:800;font-size:22px;color:var(--fg)}
+  .stroke path{stroke:var(--green);stroke-width:6;fill:transparent;stroke-linecap:round;stroke-dasharray:480;stroke-dashoffset:480;animation:draw 1.8s ease forwards}
+  @keyframes draw{to{stroke-dashoffset:0}}
+  nav{position:sticky;top:0;backdrop-filter:saturate(1.8) blur(8px);background:rgba(255,255,255,.9);border-bottom:1px solid #eee;display:flex;justify-content:space-between;align-items:center;padding:10px 16px;z-index:100}
+  nav .logo{display:flex;align-items:center;gap:10px;font-weight:800;text-decoration:none;color:var(--fg)}
+  nav .logo .dot{width:18px;height:18px;border-radius:4px;background:var(--green)}
+  nav .menu a{margin-left:14px;text-decoration:none;color:var(--fg);font-weight:600}
+  nav .menu a:hover{color:var(--green)}
+  header{padding:72px 20px 36px;text-align:center}
+  h1{font-size:42px;line-height:1.05;margin:0 0 10px}
+  p.lead{font-size:18px;color:#333;max-width:840px;margin:0 auto}
+  .cta{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-top:18px}
+  a.btn{padding:12px 18px;border-radius:12px;text-decoration:none;border:1px solid #111;color:#111;font-weight:600}
+  a.btn.primary{background:var(--fg);color:#fff;border-color:var(--fg)}
+  a.btn:hover{transform:translateY(-1px)}
+  section{padding:36px 20px;max-width:1000px;margin:0 auto}
+  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px}
+  .card{background:#fff;border:1px solid #eee;border-radius:14px;padding:16px;box-shadow:0 6px 20px rgba(0,0,0,.04)}
+  footer{padding:32px 20px;text-align:center;color:#777}
 </style>
 </head>
 <body>
+<div id="splash" role="status" aria-label="Chargement">
+  <div class="logoWrap">
+    <svg class="qricon stroke" viewBox="0 0 100 100" aria-hidden="true">
+      <path d="M10 10 h30 v30 h-30 z M60 10 h30 v30 h-30 z M10 60 h30 v30 h-30 z M60 60 h12 v12 h18 v18 h-12 v-6 h-12 v-24 z"/>
+    </svg>
+    <div class="word">QRLocal</div>
+  </div>
+</div>
+
+<nav>
+  <a href="index.html" class="logo"><span class="dot"></span>QRLocal</a>
+  <div class="menu">
+    <a href="studio.html">Studio</a>
+    <a href="cards.html">Cartes</a>
+    <a href="profile.html?name=Boulangerie%20de%20Quartier&headline=Pain%2C%20caf%C3%A9%20%26%20bons%20sourires&desc=Croissants%20au%20beurre%2C%20caf%C3%A9%20local%2C%20pain%20chaud.&address=12%20Rue%20des%20Pins%2C%20Laval&hours=Lun%E2%80%93Sam%207%3A00%E2%80%9319%3A30&pay=https%3A%2F%2Fbuy.stripe.com%2Ftest_6oE03kA9d3Yf4bGcMN&amounts=2%2C5%2C10&accent=%230f6">Exemple</a>
+  </div>
+</nav>
+
 <header>
-  <h1>Scan & Go Local+</h1>
-  <p class="lead">Un QR, mille façons d’être soutenu : infos, contact, réseaux, <b>dons</b>.</p>
+  <h1>Un QR, mille soutiens</h1>
+  <p class="lead">Crée une page publique en 30 secondes avec bouton de don compatible <b>Apple Pay</b>, <b>Google Pay</b> et carte. Imprime tes cartes QR, colle-les, et laisse la magie opérer.</p>
   <div class="cta">
     <a class="btn primary" href="studio.html">Créer une page QR</a>
     <a class="btn" href="cards.html">Imprimer des cartes</a>
-    <a class="btn" href="profile.html?name=Boulangerie%20de%20Quartier&headline=Pain%2C%20caf%C3%A9%20%26%20bons%20sourires&desc=Croissants%20au%20beurre%2C%20caf%C3%A9%20local%2C%20pain%20chaud.&address=12%20Rue%20des%20Pins%2C%20Laval&hours=Lun%E2%80%93Sam%207%3A00%E2%80%9319%3A30&pay=https%3A%2F%2Fbuy.stripe.com%2Ftest_EXEMPLE&amounts=2%2C5%2C10&accent=%230f6">Voir un exemple</a>
   </div>
 </header>
+
 <section>
-  <h2>Comment ça marche</h2>
   <div class="grid">
-    <div class="card">1) Créez votre page dans le <a href="studio.html">Studio</a></div>
-    <div class="card">2) Imprimez des <a href="cards.html">cartes QR</a></div>
-    <div class="card">3) Recevez des dons (Stripe/PayPal/Lydia)</div>
+    <div class="card"><b>Simple</b> — Colle ton lien de don (Stripe/PayPal/Lydia) et c’est bon.</div>
+    <div class="card"><b>Rapide</b> — Apple Pay / Google Pay s’affichent automatiquement si disponibles.</div>
+    <div class="card"><b>Local</b> — Pour commerces, assos, artistes, clubs, événements.</div>
   </div>
 </section>
-<footer>© Scan & Go Local+</footer>
+
+<footer>© QRLocal — fonctionne sur GitHub Pages. Ajoutez à l’écran d’accueil pour une expérience “appli”.</footer>
+
+<script>
+window.addEventListener('load', () => {
+  setTimeout(()=>document.getElementById('splash').classList.add('hide'), 1200);
+  if('serviceWorker' in navigator){
+    navigator.serviceWorker.register('./service-worker.js').catch(()=>{});
+  }
+});
+</script>
 </body>
 </html>
