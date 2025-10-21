@@ -1,6 +1,6 @@
-QRLocal v3.2 — Clarté & Protection
-- Public : `profile.html` (aucun bouton Accueil), lecture seule, whitelist des hôtes de paiement.
-- Commerçant : `studio.html` verrouillé par PIN (modifier ADMIN_PIN dans le fichier).
-- Mode LOCKED (dans `profile.html`) pour ignorer les paramètres d’URL et figer vos infos.
+QRLocal v4 — Activation + Backend
 
-Déploiement : mettez tous les fichiers à la racine de `scan-go-local`.
+1) Déployez le Worker (voir /worker/README.md). Notez son URL, ex: https://qrlocal.example.workers.dev
+2) Dans studio.html et profile.html, remplacez WORKER_ORIGIN par l’URL du Worker.
+3) Publiez une page via le Studio avec un code d’activation (Stripe) ou un code dev.
+4) Ouvrez la page publique: profile.html?slug=VOTRE-SLUG

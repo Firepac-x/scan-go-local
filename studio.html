@@ -1,129 +1,35 @@
 <!doctype html>
-<html lang="fr">
-<head>
-<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Espace commerçant — QRLocal</title>
-<link rel="manifest" href="manifest.json"><meta name="theme-color" content="#ffffff">
-<style>
-:root{--green:#0f6;--fg:#111;--muted:#666}
-body{font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;margin:0;color:var(--fg);background:#fafafa}
-.lock{position:fixed;inset:0;background:#fff;display:flex;align-items:center;justify-content:center;z-index:9999}
-.lock .box{border:1px solid #eee;border-radius:14px;padding:18px;box-shadow:0 6px 20px rgba(0,0,0,.06);max-width:340px}
-.lock h3{margin:0 0 8px}
-input,textarea{width:100%;padding:10px;border:1px solid #ccc;border-radius:10px}
-.btn{display:inline-block;padding:10px 14px;border-radius:12px;text-decoration:none;border:1px solid #111;color:#111;font-weight:700;background:#fff}
-.btn.primary{background:#111;color:#fff;border-color:#111}
-.topbar{position:sticky;top:0;background:#fff;border-bottom:1px solid #eee;padding:10px 16px;z-index:100;display:flex;justify-content:space-between;align-items:center}
-.topbar .who{font-size:12px;color:#0a4;background:#eafff0;border:1px solid #c4f1d4;padding:4px 8px;border-radius:999px}
-.wrap{display:grid;grid-template-columns:420px 1fr;gap:12px;min-height:100vh}
-.left{padding:14px}
-.right{padding:0;border-left:1px solid #eee;background:#fff}
-label{display:block;font-size:12px;color:#555;margin:6px 0 4px}
-.group{background:#fff;border:1px solid #eee;border-radius:14px;padding:10px;margin:8px 0;box-shadow:0 6px 20px rgba(0,0,0,.03)}
-iframe{width:100%;height:100vh;border:0;background:#f8f8f8}
-.muted{color:#666;font-size:12px}
-.row{display:flex;gap:8px}
-</style>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
-</head>
-<body>
-<div id="lock" class="lock" aria-modal="true" role="dialog">
-  <div class="box">
-    <h3>Déverrouiller l’espace commerçant</h3>
-    <p class="muted">Entrez votre code PIN (modifiez-le dans le fichier).</p>
-    <input id="pin" placeholder="PIN par défaut 864213">
-    <div style="margin-top:10px;display:flex;gap:8px;justify-content:flex-end">
-      <a class="btn" href="#" id="unlock">Entrer</a>
-    </div>
-  </div>
-</div>
-
-<div class="topbar"><span>QRLocal</span><span class="who">Espace commerçant</span></div>
-<div class="wrap">
-  <div class="left">
-    <h2>Créer / éditer ma page</h2>
-    <div class="group">
-      <label>Nom</label><input id="name" value="Boulangerie de Quartier">
-      <label>Slogan</label><input id="headline" value="Pain, café & bons sourires">
-      <label>Description</label><textarea id="desc" rows="3">Croissants au beurre, café local, pain chaud.</textarea>
-      <label>Adresse</label><input id="address" placeholder="12 Rue des Pins, Laval">
-      <label>Photo (URL)</label><input id="photo" placeholder="https://...jpg">
-      <label>Couleur d'accent</label><input id="accent" value="#0f6">
-    </div>
-    <div class="group">
-      <label>Téléphone</label><input id="phone" placeholder="+33 6 11 22 33 44">
-      <label>WhatsApp (+33...)</label><input id="wa" placeholder="+33611223344">
-      <label>Email</label><input id="email" placeholder="contact@exemple.fr">
-      <label>Site</label><input id="site" placeholder="https://exemple.fr">
-      <label>Maps</label><input id="maps" placeholder="https://maps.google.com/?q=...">
-    </div>
-    <div class="group">
-      <label>Horaires</label><input id="hours" placeholder="Lun–Sam 7:00–19:30">
-      <label>IG</label><input id="ig" placeholder="https://instagram.com/...">
-      <label>FB</label><input id="fb" placeholder="https://facebook.com/...">
-      <label>YT</label><input id="yt" placeholder="https://youtube.com/...">
-    </div>
-    <div class="group">
-      <label><b>Lien de don (Stripe recommandé)</b></label><input id="pay" placeholder="https://buy.stripe.com/test_6oE03kA9d3Yf4bGcMN">
-      <div class="row">
-        <div><label>Montants rapides</label><input id="amounts" value="2,5,10"></div>
-        <div><label>pay2 (option)</label><input id="pay2" placeholder="Lien direct 2€ (option)"></div>
-      </div>
-      <div class="row">
-        <div><label>pay5 (option)</label><input id="pay5" placeholder="Lien direct 5€ (option)"></div>
-        <div><label>pay10 (option)</label><input id="pay10" placeholder="Lien direct 10€ (option)"></div>
-      </div>
-      <div class="muted">Apple Pay / Google Pay s’affichent automatiquement avec Payment Links Stripe.</div>
-    </div>
-    <div class="group">
-      <label>Message public (merci / mission)</label><textarea id="thanks" rows="2" placeholder="Merci pour votre soutien — chaque don nous aide à...">Merci pour votre soutien — chaque don nous aide à améliorer notre atelier.</textarea>
-      <label>Email pour recevoir des messages</label><input id="contact" placeholder="contact@exemple.fr">
-    </div>
-    <div class="group">
-      <a class="btn primary" href="#" id="build">Générer le lien</a>
-      <a class="btn" href="#" id="open">Ouvrir</a>
-      <a class="btn" href="#" id="copy">Copier l'URL</a>
-    </div>
-    <div class="group">
-      <div id="qrcode" style="width:180px;height:180px"></div>
-      <div class="muted">Imprimez ce QR et collez-le sur la vitrine.</div>
-    </div>
-  </div>
-  <div class="right"><iframe id="preview"></iframe></div>
-</div>
-
+<html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Espace commerçant — QRLocal</title><link rel="manifest" href="manifest.json"><meta name="theme-color" content="#ffffff">
+<style>:root{--green:#0f6;--fg:#111;--muted:#666}body{font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;margin:0;color:var(--fg);background:#fafafa}
+.topbar{position:sticky;top:0;background:#fff;border-bottom:1px solid #eee;padding:10px 16px;z-index:100;display:flex;justify-content:space-between;align-items:center}.topbar .who{font-size:12px;color:#0a4;background:#eafff0;border:1px solid #c4f1d4;padding:4px 8px;border-radius:999px}
+.wrap{display:grid;grid-template-columns:420px 1fr;gap:12px;min-height:100vh}.left{padding:14px}.right{padding:0;border-left:1px solid #eee;background:#fff}
+label{display:block;font-size:12px;color:#555;margin:6px 0 4px}.group{background:#fff;border:1px solid #eee;border-radius:14px;padding:10px;margin:8px 0;box-shadow:0 6px 20px rgba(0,0,0,.03)}
+input,textarea{width:100%;padding:10px;border:1px solid #ccc;border-radius:10px}.btn{display:inline-block;padding:10px 14px;border-radius:12px;text-decoration:none;border:1px solid #111;color:#111;font-weight:700;background:#fff}
+.btn.primary{background:#111;color:#fff;border-color:#111}.muted{color:#666;font-size:12px}iframe{width:100%;height:100vh;border:0;background:#f8f8f8}.row{display:flex;gap:8px}
+.badge{display:inline-block;background:#eafff0;color:#0a4;border:1px solid #c4f1d4;padding:4px 8px;border-radius:999px;font-size:12px;font-weight:700;margin:0 0 8px}</style>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script></head>
+<body><div class="topbar"><span>QRLocal</span><span class="who">Espace commerçant</span></div>
+<div class="wrap"><div class="left">
+<h2>Publier ma page</h2>
+<div class="badge">Étape 1 — Code d’activation</div>
+<div class="group"><label>Code d’activation (reçu après paiement)</label><input id="code" placeholder="XXXX-XXXX-XXXX"><div class="muted">Ou utilisez /api/dev/newcode (dev).</div></div>
+<div class="badge">Étape 2 — Contenu</div>
+<div class="group"><label>Slug public</label><input id="slug" placeholder="ex: boulangerie-martin"><label>Nom</label><input id="name" value="Boulangerie de Quartier">
+<label>Slogan</label><input id="headline" value="Pain, café & bons sourires"><label>Description</label><textarea id="desc" rows="3">Croissants au beurre, café local, pain chaud.</textarea>
+<label>Adresse</label><input id="address" placeholder="12 Rue des Pins, Laval"><label>Photo (URL)</label><input id="photo" placeholder="https://...jpg"><label>Couleur</label><input id="accent" value="#0f6">
+<div class="row"><div style='flex:1'><label>Montants rapides</label><input id="amounts" value="2,5,10"></div><div style='flex:1'><label>Lien de don</label><input id="pay" placeholder="https://buy.stripe.com/..."></div></div></div>
+<div class="badge">Étape 3 — Contacts</div>
+<div class="group"><label>Téléphone</label><input id="phone"><label>WhatsApp (+33...)</label><input id="wa"><label>Email</label><input id="email"><label>Site</label><input id="site"><label>Maps</label><input id="maps">
+<label>Horaires</label><input id="hours"><label>IG</label><input id="ig"><label>FB</label><input id="fb"><label>YT</label><input id="yt"><label>Message public</label><textarea id="thanks" rows="2">Merci pour votre soutien !</textarea>
+<label>Email pour recevoir des messages</label><input id="contact"></div>
+<div class="group"><a class="btn" href="#" id="previewBtn">Prévisualiser</a><a class="btn primary" href="#" id="publishBtn">Enregistrer & Publier</a><div id="pubResult" class="muted" style="margin-top:8px"></div></div>
+</div><div class="right"><iframe id="preview"></iframe></div></div>
 <script>
-// Admin PIN (client-side)
-const ADMIN_PIN = '864213'; // À CHANGER
-const lock = document.getElementById('lock');
-function unlocked(){ return localStorage.getItem('qrlocal_admin_ok') === '1' }
-function hideLock(){ lock.style.display='none' }
-document.getElementById('unlock').onclick = (e)=>{
-  e.preventDefault();
-  const v = document.getElementById('pin').value.trim();
-  if(v === ADMIN_PIN){ localStorage.setItem('qrlocal_admin_ok','1'); hideLock(); } else { alert('PIN incorrect'); }
-};
-if(unlocked()) hideLock();
-
-// Builder
-const buildURL = () => {
-  const base = new URL('profile.html', location.href);
-  ['name','headline','desc','address','photo','accent','phone','wa','email','site','maps','hours','ig','fb','yt','pay','amounts','pay2','pay5','pay10','thanks','contact'].forEach(id => {
-    const v = document.getElementById(id).value.trim();
-    if(v) base.searchParams.set(id, v);
-  });
-  return base.toString();
-};
-function build(){
-  const url = buildURL();
-  document.getElementById('preview').src = url;
-  const qrd = document.getElementById('qrcode'); qrd.innerHTML='';
-  new QRCode(qrd, { text: url, width: 180, height: 180 });
-  document.getElementById('open').href = url;
-  document.getElementById('copy').onclick = (e)=>{ e.preventDefault(); navigator.clipboard.writeText(url) };
-}
-document.getElementById('build').onclick = (e)=>{ e.preventDefault(); build(); };
-build();
-</script>
-</body>
-</html>
+const WORKER_ORIGIN = 'https://your-worker-subdomain.workers.dev'; // <-- à remplacer
+function buildData(){const ids=['slug','name','headline','desc','address','photo','accent','amounts','pay','phone','wa','email','site','maps','hours','ig','fb','yt','thanks','contact'];const data={};ids.forEach(id=>data[id]=document.getElementById(id).value.trim());return data;}
+function buildPreviewURL(){const d=buildData();const params=new URLSearchParams();['name','headline','desc','address','photo','accent','amounts','pay','phone','wa','email','site','maps','hours','ig','fb','yt','thanks','contact'].forEach(k=>{if(d[k])params.set(k,d[k]);});return 'profile.html?'+params.toString();}
+document.getElementById('previewBtn').onclick=(e)=>{e.preventDefault();document.getElementById('preview').src=buildPreviewURL();};
+async function publish(){const code=document.getElementById('code').value.trim();if(!code){alert('Entrez votre code');return;}const data=buildData();const res=await fetch(WORKER_ORIGIN+'/api/page/save',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({code,slug:data.slug or undefined,data})});const j=await res.json().catch(()=>({ok:false,error:'Réponse invalide'}));const out=document.getElementById('pubResult');if(j.ok){const url='profile.html?slug='+encodeURIComponent(j.slug);out.innerHTML='✅ Publié : <a href="'+url+'" target="_blank" rel="noopener">'+url+'</a>';}else{out.textContent='❌ '+(j.error||'Erreur');}}
+document.getElementById('publishBtn').onclick=(e)=>{e.preventDefault();publish();};
+</script></body></html>

@@ -1,0 +1,17 @@
+name = "qrlocal-worker"
+main = "worker.js"
+compatibility_date = "2024-09-01"
+
+[[kv_namespaces]]
+binding = "ACTIVATION"
+id = "ACTIVATION_KV_ID"
+
+[[kv_namespaces]]
+binding = "PAGES"
+id = "PAGES_KV_ID"
+
+[vars]
+CORS_ORIGIN = "*"
+# ADMIN_KEY = "set-strong-random-key"
+
+# Set your Stripe secret with: wrangler secret put STRIPE_SECRET_KEY
